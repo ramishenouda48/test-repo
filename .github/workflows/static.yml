@@ -63,10 +63,10 @@ jobs:
         run: npm ci
       - name: build
         run: npm run build --if-present
-      - name: Archive dependencies
+      - name: Archive build
         uses: actions/upload-artifact@v2
         with:
-          name: dependencies
+          name: build
           path: ./build
 
   deploy:
@@ -81,7 +81,7 @@ jobs:
       - name: Download build
         uses: actions/download-artifact@v2
         with:
-          name: download build
+          name: build
           path: ./build
 
       - name: Setup Pages
