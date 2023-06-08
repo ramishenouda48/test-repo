@@ -63,6 +63,11 @@ jobs:
         run: npm ci
       - name: build
         run: npm run build --if-present
+      - name: Archive dependencies
+        uses: actions/upload-artifact@v2
+        with:
+          name: dependencies
+          path: ./build
 
   deploy:
     needs: build
@@ -73,6 +78,12 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v3
+      - name: Download build
+        uses: actions/download-artifact@v2
+        with:
+          name: download build
+          path: ./build
+
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
