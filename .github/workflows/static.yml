@@ -17,20 +17,35 @@ concurrency:
 
 jobs:
   # Single deploy job since we're just deploying
-  install-dependencies:
+  install_dependencies:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Install dependencies
-        run: npm ci
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install npm dependencies
+        run: npm install
+
+      - name: Archive dependencies
+        uses: actions/upload-artifact@v2
+        with:
+          name: dependencies
+          path: ./node_modules
   
   jest:
     runs-on: ubuntu-latest
-    if: success()
+    needs: install-dependencies
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Download dependencies
+        uses: actions/download-artifact@v2
+        with:
+          name: dependencies
+          path: ./node_modules
+
       - name: Running Jest tests.
         run: npm test
 
