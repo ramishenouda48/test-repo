@@ -15,34 +15,35 @@ concurrency:
   group: 'pages'
   cancel-in-progress: false
 
-install_dependencies_and_jobs:
-  installjest:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install npm dependencies
-        run: npm ci
+jobs: 
+  install_dependencies_and_jobs:
+    installjest:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Install npm dependencies
+          run: npm ci
 
-      - name: Running Jest tests.
-        run: npm test
+        - name: Running Jest tests.
+          run: npm test
 
-  deploy:
-    needs: install_dependencies_and_jobs
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    if: success() && github.ref == 'refs/heads/main'
-    steps:
-      - name: Install npm dependencies
-        run: npm ci
-      - name:  build
-        run: npm run build --if-present
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: ./build
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2
+    deploy:
+      needs: install_dependencies_and_jobs
+      runs-on: ubuntu-latest
+      environment:
+        name: github-pages
+        url: ${{ steps.deployment.outputs.page_url }}
+      if: success() && github.ref == 'refs/heads/main'
+      steps:
+        - name: Install npm dependencies
+          run: npm ci
+        - name:  build
+          run: npm run build --if-present
+        - name: Setup Pages
+          uses: actions/configure-pages@v3
+        - name: Upload artifact
+          uses: actions/upload-pages-artifact@v1
+          with:
+            path: ./build
+        - name: Deploy to GitHub Pages
+          id: deployment
+          uses: actions/deploy-pages@v2
